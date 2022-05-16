@@ -1,9 +1,19 @@
+type Comparison = 'equal' | 'sublist' | 'superlist' | 'unequal';
+
 export class List {
-  constructor() {
-    throw new Error('Remove this statement and implement this function')
+  list: number[] = [];
+  constructor(...args: number[]) {
+    this.list = [...args];
   }
 
-  compare() {
-    throw new Error('Remove this statement and implement this function')
+  compare(listB: List): Comparison {
+    if (!this.list.length) {
+      if (!listB.list.length) return 'equal';
+      return 'sublist';
+    }
+    // this.list has a length of 1+
+    if (!listB.list.length) return 'superlist';
+    // both lists have a length of 1+
+
   }
 }
