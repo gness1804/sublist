@@ -27,7 +27,16 @@ export class List {
     if (!listB.length) return 'superlist';
     // both lists have a length of 1+
     if (listA.length > listB.length) {
-
+      let hasCompleteSet = false;
+      listA.forEach((number, i) => {
+        if (number === listB[0]) {
+          const sliceToCompare = listA.slice(i, i + (listB.length));
+          if (this.areTheyEqual(sliceToCompare, listB)) {
+            hasCompleteSet = true;
+          }
+        }
+      })
+      return hasCompleteSet ? 'superlist' : 'unequal';
     } else if (listA.length < listB.length) {
       let hasCompleteSet = false;
       listB.forEach((number, i) => {
