@@ -16,6 +16,11 @@ export class List {
     return !(failedCount > 0);
   }
 
+  private whichIsLonger(listA: number[], listB: number[]): number[][] {
+    if (listA.length > listB.length) return [listA, listB];
+    return [listB, listA];
+  }
+
   public compare(secondList: List): Comparison {
     const listA = this.list;
     const listB = secondList.list;
@@ -25,32 +30,20 @@ export class List {
     }
     // listA has a length of 1+
     if (!listB.length) return 'superlist';
-    // both lists have a length of 1+
-    if (listA.length > listB.length) {
-      let hasCompleteSet = false;
-      listA.forEach((number, i) => {
-        if (number === listB[0]) {
-          const sliceToCompare = listA.slice(i, i + (listB.length));
-          if (this.areTheyEqual(sliceToCompare, listB)) {
-            hasCompleteSet = true;
-          }
-        }
-      })
-      return hasCompleteSet ? 'superlist' : 'unequal';
-    } else if (listA.length < listB.length) {
-      let hasCompleteSet = false;
-      listB.forEach((number, i) => {
-        if (number === listA[0]) {
-          const sliceToCompare = listB.slice(i, i + (listA.length));
-          if (this.areTheyEqual(sliceToCompare, listA)) {
-            hasCompleteSet = true;
-          }
-        }
-      })
-      return hasCompleteSet ? 'sublist' : 'unequal';
-    } else {
-      // this list lengths are the same.
+    if (listA.length === listB.length)
       return this.areTheyEqual(listA, listB) ? 'equal' : 'unequal';
-    }
+    // both lists have a length of 1+
+    const [longerList, shorterList] = this.whichIsLonger(listA, listB);
+    const listType: Comparison = longerList === listA ? 'superlist' : 'sublist';
+    let hasCompleteSet = false;
+    longerList.forEach((number, i) => {
+      if (number === shorterList[0]) {
+        const sliceToCompare = longerList.slice(i, i + (shorterList.length));
+        if (this.areTheyEqual(sliceToCompare, shorterList)) {
+          hasCompleteSet = true;
+        }
+      }
+    })
+    return hasCompleteSet ? listType : 'unequal';
   }
 }
