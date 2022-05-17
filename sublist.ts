@@ -1,12 +1,22 @@
 type Comparison = 'equal' | 'sublist' | 'superlist' | 'unequal';
 
 export class List {
-  list: number[] = [];
+  public list: number[] = [];
   constructor(...args: number[]) {
     this.list = [...args];
   }
 
-  compare(secondList: List): Comparison {
+  private areTheyEqual(listA: number[], listB: number[]): boolean {
+    let failedCount = 0;
+    listB.forEach((number, i) => {
+      if (number !== listA[i]) {
+        failedCount++;
+      }
+    })
+    return !(failedCount > 0);
+  }
+
+  public compare(secondList: List): Comparison {
     const listA = this.list;
     const listB = secondList.list;
     if (!listA.length) {
@@ -19,16 +29,19 @@ export class List {
     if (listA.length > listB.length) {
 
     } else if (listA.length < listB.length) {
-
-    } else {
-      // this list lengths are the same.
-      let failedCount = 0;
+      let hasCompleteSet = false;
       listB.forEach((number, i) => {
-        if (number !== listA[i]) {
-          failedCount++;
+        if (number === listA[0]) {
+          const sliceToCompare = listB.slice(i, i + (listA.length));
+          if (this.areTheyEqual(sliceToCompare, listA)) {
+            hasCompleteSet = true;
+          }
         }
       })
-      return !!failedCount ? 'unequal' : 'equal';
+      return hasCompleteSet ? 'sublist' : 'unequal';
+    } else {
+      // this list lengths are the same.
+      return this.areTheyEqual(listA, listB) ? 'equal' : 'unequal';
     }
   }
 }
